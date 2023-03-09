@@ -13,9 +13,7 @@ This is a console application built using C# that uses Entity Framework Core to 
 1. Clone the repository to your local machine
 2. Open the solution file (.sln) in Visual Studio
 3. Build the solution
-4. Install these packages using the Package Manager Console in Visual Studio by running the following command:
-Install-Package Microsoft.EntityFrameworkCore.SqlServer
-Install-Package Microsoft.EntityFrameworkCore.Tools
+4. Install these packages using the Package Manager Console in Visual Studio by running the following command:<br>Install-Package Microsoft.EntityFrameworkCore.SqlServer <br>Install-Package Microsoft.EntityFrameworkCore.Tools
 5. Update the connection string in the `DataContext` class located in `Contexts/DataContext.cs` in the `OnConfiguring` method to point to the location of your SQL Server database file
 6. Run the app in debug mode (press F5)
 
