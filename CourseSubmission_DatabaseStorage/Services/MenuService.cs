@@ -10,7 +10,7 @@ internal class MenuService
         Console.WriteLine("\n♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦ MAIN MENU ♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦");
         Console.WriteLine("\n1. Create a new complaint report/case.\n");
         Console.WriteLine("2. View all cases in the database.\n");
-        Console.WriteLine("3. Search for a specific report/case with \n   \"CaseId\" and also all its comments.\n");
+        Console.WriteLine("3. Search for a specific report/case with \n   \"CaseId\" and all its comments.\n");
         Console.WriteLine("4. Update the status of a case.\n");
         Console.WriteLine("5. Create a comment on a case.\n");
         Console.WriteLine("6. Exit the program.");
@@ -58,6 +58,6 @@ internal class MenuService
     {
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("\nOps, you entered an invalid menu option. \nPress enter and try again..");
+        Console.WriteLine("\nOps, you entered an invalid menu option. \nPress a key and try again..");
     }
 }
