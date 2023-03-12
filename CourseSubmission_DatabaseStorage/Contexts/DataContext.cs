@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CourseSubmission_DatabaseStorage.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace CourseSubmission_DatabaseStorage.Contexts;
 
@@ -17,5 +18,11 @@ internal class DataContext : DbContext
     }
     #endregion
 
+    public DbSet<ClientEntity> Clients { get; set; }
+    public DbSet<CaseEntity> Cases { get; set; }
+    public DbSet<CaseCommentEntity> CaseComments { get; set; }
+    public DbSet<ServiceWorkerEntity> ServiceWorkers { get; set; }
+    public DbSet<CompanyEntity> Companies { get; set; }
+    public DbSet<AdressEntity> Adresses { get; set; }
 
 }
