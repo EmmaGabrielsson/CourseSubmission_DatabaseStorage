@@ -1,34 +1,44 @@
-﻿using CourseSubmission_DatabaseStorage.Models.Forms;
+﻿using CourseSubmission_DatabaseStorage.Models.Entities;
+using CourseSubmission_DatabaseStorage.Models.Forms;
 
 namespace CourseSubmission_DatabaseStorage.Services;
 
 internal class MenuService
 {
+    private readonly CaseService _caseService = new CaseService();
+
     //private readonly CaseService _caseService = new CaseService();
     public async Task MainMenu()
     {
         Console.Clear();
+        var _datetime = DateTime.Now;
+        Console.WriteLine(_datetime);
+
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("\n  ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ MAIN MENU ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦");
+        Console.WriteLine("\n  ♦ ♦ ♦ ♦ ♦ ♦ MAIN MENU CLIENTS ♦ ♦ ♦ ♦ ♦ ♦");
         Console.WriteLine("  ♦                                       ♦");
         Console.WriteLine("  ♦  1. Create a new Case.                ♦");
         Console.WriteLine("  ♦                                       ♦");
-        Console.WriteLine("  ♦  2. View all Cases in the database.   ♦");
+        Console.WriteLine("  ♦  2. View all your Cases.              ♦");
         Console.WriteLine("  ♦                                       ♦");
-        Console.WriteLine("  ♦  3. Search for a specific Case with   ♦");
-        Console.WriteLine("  ♦    \"CaseNumber\" and its Comments.     ♦");
+        Console.WriteLine("  ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦\n");
+        Console.WriteLine("  ♦ ♦ ♦ ♦ ♦ ♦ MAIN MENU WORKERS ♦ ♦ ♦ ♦ ♦ ♦");
         Console.WriteLine("  ♦                                       ♦");
-        Console.WriteLine("  ♦  4. Update the Status of a Case.      ♦");
+        Console.WriteLine("  ♦  3. View all Cases in the database.   ♦");
         Console.WriteLine("  ♦                                       ♦");
-        Console.WriteLine("  ♦  5. Create a Comment on a Case.       ♦");
+        Console.WriteLine("  ♦  4. Search for a specific Case with   ♦");
+        Console.WriteLine("  ♦    \"CaseId\" and its Comments.         ♦");
         Console.WriteLine("  ♦                                       ♦");
-        Console.WriteLine("  ♦  6. Exit the program.                 ♦");
+        Console.WriteLine("  ♦  5. Update the Status of a Case.      ♦");
+        Console.WriteLine("  ♦                                       ♦");
+        Console.WriteLine("  ♦  6. Create a Comment on a Case.       ♦");
+        Console.WriteLine("  ♦                                       ♦");
+        Console.WriteLine("  ♦  7. Exit the program.                 ♦");
         Console.WriteLine("  ♦                                       ♦");
         Console.WriteLine("  ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦\n");
         Console.ForegroundColor = ConsoleColor.Gray;
-        Console.Write("\n  ☻ Enter a menu option (1-6): ");
+        Console.Write("\n  ☻ Enter a menu option (1-7): ");
         var option = Console.ReadLine();
-        Console.ForegroundColor = ConsoleColor.Yellow;
 
         switch (option)
         {
@@ -37,22 +47,25 @@ internal class MenuService
                 break;
 
             case "2":
-                //await ShowAllCasesMenu();
                 break;
 
             case "3":
-                //await SearchSpecificCaseMenu();
+                //await ShowAllCasesMenu();
                 break;
 
             case "4":
-                //await UpdateStatusMenu();
+                //await SearchSpecificCaseMenu();
                 break;
 
             case "5":
-                //await CreateCaseCommentMenu();
+                //await UpdateStatusMenu();
                 break;
 
             case "6":
+                //await CreateCaseCommentMenu();
+                break;
+
+            case "7":
                 Environment.Exit(1);
                 break;
 
@@ -66,34 +79,34 @@ internal class MenuService
 
     public async Task CreateCaseMenu()
     {
-        var form = new CaseRegistrationForm();
+        var _form = new CaseRegistrationForm();
+        var _case = new CaseEntity();
 
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine("\n------------ Create New Case -----------\n");
         Console.Write("Client Firstname: "); Console.ForegroundColor = ConsoleColor.Gray;
-        form.FirstName = Console.ReadLine() ?? "";
+        _form.FirstName = Console.ReadLine() ?? "";
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("Client Lastname: "); Console.ForegroundColor = ConsoleColor.Gray;
-        form.LastName = Console.ReadLine() ?? "";
+        _form.LastName = Console.ReadLine() ?? "";
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("Client Email: "); Console.ForegroundColor = ConsoleColor.Gray;
-        form.ClientEmail = Console.ReadLine() ?? "";
+        _form.ClientEmail = Console.ReadLine() ?? "";
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("Client PhoneNumber: "); Console.ForegroundColor = ConsoleColor.Gray;
-        form.ClientPhoneNumber = Console.ReadLine() ?? "";
+        _form.ClientPhoneNumber = Console.ReadLine() ?? "";
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("Describe the case: "); Console.ForegroundColor = ConsoleColor.Gray;
-        form.CaseDescription = Console.ReadLine() ?? "";
-        form.RegistrationDate = DateTime.Now;
-        form.CaseStatus = "Not Started";
-        /*
-        var result = await _clientService.CreateAsync(form);
+        _form.CaseDescription = Console.ReadLine() ?? "";
+        _form.RegistrationDate = DateTime.Now;
+        _form.CaseStatus = "Not Started";
+        
+        var result = await _caseService.SaveAsync(_case);
         if (result == null)
             Console.WriteLine("\nA case with the same casenumber already exists.");
         else
-            Console.WriteLine($"\nA Case with id {result.CaseNumber} have been created.");
-        */
+            Console.WriteLine($"\nThank you, a Case with id: {result.Id} have been created.\nWe will get back to you as soon as possible.");
     }
     /*
     public async Task ShowAllCasesMenu()

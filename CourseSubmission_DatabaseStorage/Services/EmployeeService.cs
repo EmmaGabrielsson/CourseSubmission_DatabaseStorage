@@ -2,6 +2,6 @@
 
 namespace CourseSubmission_DatabaseStorage.Services;
 
-internal class AdressService : GenericService<AdressEntity>
+internal class EmployeeService : GenericService<EmployeeEntity>
 {
 }

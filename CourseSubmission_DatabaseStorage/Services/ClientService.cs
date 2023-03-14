@@ -1,12 +1,31 @@
 ﻿using CourseSubmission_DatabaseStorage.Contexts;
 using CourseSubmission_DatabaseStorage.Models.Entities;
-using CourseSubmission_DatabaseStorage.Models.Forms;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace CourseSubmission_DatabaseStorage.Services;
 
-internal class ClientService
+internal class ClientService : GenericService<ClientEntity>
 {
+    private readonly DataContext _context = new DataContext();
+
+    public override async Task<IEnumerable<ClientEntity>> GetAllAsync()
+    {
+        return await _context.Clients.Include(x => x.Adress).ToListAsync();
+    }
+
+    public override async Task<ClientEntity> GetAsync(Expression<Func<ClientEntity, bool>> predicate)
+    {
+        var item = await _context.Clients.Include(x => x.Adress).Include(x => x.Cases).FirstOrDefaultAsync(predicate);
+
+        if (item != null)
+            return item;
+
+        return null!;
+    }
+
+
+    /*
     private readonly DataContext _context = new DataContext();
     private readonly CaseService _caseService = new CaseService();
 
@@ -17,7 +36,7 @@ internal class ClientService
 
     public async Task<ClientEntity> GetAsync(int id)
     {
-        var clientEntity = await _context.Clients.Include(x => x.Cases).FirstOrDefaultAsync(x => x.Id == id);
+        var clientEntity = await _context.Clients.Include(x => x.Cases).FirstOrDefaultAsync(x => x.Guid == id);
         if (clientEntity != null)
             return clientEntity;
 
@@ -62,5 +81,5 @@ internal class ClientService
 
         return clientEntity;
     }
-
+    */
 }

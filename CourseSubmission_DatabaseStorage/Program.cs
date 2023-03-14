@@ -1,6 +1,5 @@
 ﻿using CourseSubmission_DatabaseStorage.Services;
 
-var menu = new MenuService();
-
+var _menu = new MenuService();
 while (true)
-    await menu.MainMenu();
+    await _menu.MainMenu();

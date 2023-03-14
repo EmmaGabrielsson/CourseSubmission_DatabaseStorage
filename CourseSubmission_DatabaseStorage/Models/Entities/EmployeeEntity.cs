@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourseSubmission_DatabaseStorage.Models.Entities;
 
-internal class ServiceWorkerEntity
+internal class EmployeeEntity
 {
     public int Id { get; set; }
 
@@ -12,7 +12,8 @@ internal class ServiceWorkerEntity
 
     [Column(TypeName = "nvarchar(60)")]
     public string LastName { get; set; } = null!;
-    public int CompanyId { get; set; }
-    public CompanyEntity Company { get; set; } = null!;
+    public int RoleId { get; set; }
+
+    public RoleEntity Role { get; set; } = null!;
 
 }
