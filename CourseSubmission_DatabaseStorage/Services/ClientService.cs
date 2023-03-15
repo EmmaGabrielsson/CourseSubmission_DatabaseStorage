@@ -7,7 +7,7 @@ namespace CourseSubmission_DatabaseStorage.Services;
 
 internal class ClientService : GenericService<ClientEntity>
 {
-    private readonly DataContext _context = new DataContext();
+    private readonly DataContext _context = new ();
     private readonly AdressService _adressService = new();
 
     public override async Task<IEnumerable<ClientEntity>> GetAllAsync()
@@ -28,64 +28,63 @@ internal class ClientService : GenericService<ClientEntity>
     public override async Task<ClientEntity> UpdateAsync(ClientEntity entity)
     {
         var _adress = new AdressEntity();
-        var _updatedEntity = new ClientEntity();
 
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine("\nFill in the following..");
         Console.Write("\nFirstname: ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _updatedEntity.FirstName = Console.ReadLine() ?? "";
-        if (string.IsNullOrEmpty(_updatedEntity.FirstName))
-            _updatedEntity.FirstName = entity.FirstName;
+        var _findFirstName = await GetAsync(x => x.FirstName == entity.FirstName);
+        entity.FirstName = Console.ReadLine()!;
+        if (string.IsNullOrEmpty(entity.FirstName))
+        {
+            entity.FirstName = _findFirstName.FirstName;
+        }
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("Lastname: ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _updatedEntity.LastName = Console.ReadLine() ?? "";
-        if (string.IsNullOrEmpty(_updatedEntity.LastName))
-            _updatedEntity.LastName = entity.LastName;
+        var _findLastName = await GetAsync(x => x.LastName == entity.LastName);
+        entity.LastName = Console.ReadLine()!;
+        if (string.IsNullOrEmpty(entity.LastName))
+        {
+            entity.LastName = _findLastName.LastName;
+        }
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.Write("Telephone number: ");
+        Console.Write("Phone number (ex. +4670-1234567): ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _updatedEntity.PhoneNumber = Console.ReadLine() ?? "";
-        if (string.IsNullOrEmpty(_updatedEntity.PhoneNumber))
-            _updatedEntity.PhoneNumber = entity.PhoneNumber;
+        var _findPhoneNumber = await GetAsync(x => x.PhoneNumber == entity.PhoneNumber);
+        entity.PhoneNumber = Console.ReadLine()!;
+        if (string.IsNullOrEmpty(entity.PhoneNumber))
+        {
+            entity.PhoneNumber = _findPhoneNumber.PhoneNumber;
+        }
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("Streetname: ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _adress.StreetName = Console.ReadLine() ?? "";
+        _adress.StreetName = Console.ReadLine()!;
         if (string.IsNullOrEmpty(_adress.StreetName))
             _adress.StreetName = entity.Adress.StreetName;
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.Write("Postalcode (5): ");
+        Console.Write("Postalcode (ex. 12345): ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _adress.PostalCode = Console.ReadLine() ?? "";
+        _adress.PostalCode = Console.ReadLine()!;
         if (string.IsNullOrEmpty(_adress.PostalCode))
             _adress.PostalCode = entity.Adress.PostalCode;
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("City: ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _adress.City = Console.ReadLine() ?? "";
+        _adress.City = Console.ReadLine()!;
         if (string.IsNullOrEmpty(_adress.City))
             _adress.City = entity.Adress.City;
         Console.ForegroundColor = ConsoleColor.Yellow;
 
-        var _newAdress = await _adressService.SaveAsync(_adress);
+        var _newAdress = await _adressService.SaveAsync(_adress, x => x.StreetName == _adress.StreetName && x.PostalCode == _adress.PostalCode && x.City == _adress.City);
         if (_newAdress != null)
         {
-            _updatedEntity.AdressId = _newAdress.Id;
-            _updatedEntity.Adress = _newAdress;
-        }
-        else
-        {
-            _updatedEntity.Adress = entity.Adress;
-            _updatedEntity.AdressId = entity.AdressId;
+            entity.AdressId = _newAdress.Id;
         }
 
-        _updatedEntity.Id = entity.Id;
-        _updatedEntity.Email = entity.Email;
-
-        _context.Update(_updatedEntity);     
+        _context.Update(entity);     
         await _context.SaveChangesAsync();
-        return _updatedEntity;
+        return entity;
     }
 }

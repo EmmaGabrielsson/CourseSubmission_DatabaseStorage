@@ -7,7 +7,7 @@ namespace CourseSubmission_DatabaseStorage.Services;
 
 internal class CaseService : GenericService<CaseEntity>
 {
-    private readonly DataContext _context = new DataContext();
+    private readonly DataContext _context = new ();
 
     public override async Task<IEnumerable<CaseEntity>> GetAllAsync()
     {
