@@ -1,43 +1,39 @@
 ﻿using CourseSubmission_DatabaseStorage.Models.Entities;
 using CourseSubmission_DatabaseStorage.Models.Forms;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CourseSubmission_DatabaseStorage.Services;
 
 internal class MenuService
 {
-    private readonly CaseService _caseService = new CaseService();
-
-    //private readonly CaseService _caseService = new CaseService();
+    private readonly CaseService _caseService = new();
+    private readonly ClientService _clientService = new();
+    private readonly StatusTypeService _statusService = new();
     public async Task MainMenu()
     {
         Console.Clear();
-        var _datetime = DateTime.Now;
-        Console.WriteLine(_datetime);
-
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine("\n  ♦ ♦ ♦ ♦ ♦ ♦ MAIN MENU CLIENTS ♦ ♦ ♦ ♦ ♦ ♦");
         Console.WriteLine("  ♦                                       ♦");
         Console.WriteLine("  ♦  1. Create a new Case.                ♦");
         Console.WriteLine("  ♦                                       ♦");
-        Console.WriteLine("  ♦  2. View all your Cases.              ♦");
-        Console.WriteLine("  ♦                                       ♦");
         Console.WriteLine("  ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦\n");
-        Console.WriteLine("  ♦ ♦ ♦ ♦ ♦ ♦ MAIN MENU WORKERS ♦ ♦ ♦ ♦ ♦ ♦");
+        Console.WriteLine("  ♦ ♦ ♦ ♦ ♦  MAIN MENU EMPLOYEES  ♦ ♦ ♦ ♦ ♦");
         Console.WriteLine("  ♦                                       ♦");
-        Console.WriteLine("  ♦  3. View all Cases in the database.   ♦");
+        Console.WriteLine("  ♦  2. View all Cases in the database.   ♦");
         Console.WriteLine("  ♦                                       ♦");
-        Console.WriteLine("  ♦  4. Search for a specific Case with   ♦");
+        Console.WriteLine("  ♦  3. Search for a specific Case with   ♦");
         Console.WriteLine("  ♦    \"CaseId\" and its Comments.         ♦");
         Console.WriteLine("  ♦                                       ♦");
-        Console.WriteLine("  ♦  5. Update the Status of a Case.      ♦");
+        Console.WriteLine("  ♦  4. Update the Status of a Case.      ♦");
         Console.WriteLine("  ♦                                       ♦");
-        Console.WriteLine("  ♦  6. Create a Comment on a Case.       ♦");
+        Console.WriteLine("  ♦  5. Create a Comment on a Case.       ♦");
         Console.WriteLine("  ♦                                       ♦");
-        Console.WriteLine("  ♦  7. Exit the program.                 ♦");
+        Console.WriteLine("  ♦  6. Exit the program.                 ♦");
         Console.WriteLine("  ♦                                       ♦");
         Console.WriteLine("  ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦\n");
         Console.ForegroundColor = ConsoleColor.Gray;
-        Console.Write("\n  ☻ Enter a menu option (1-7): ");
+        Console.Write("\n  ☻ Enter a menu option (1-6): ");
         var option = Console.ReadLine();
 
         switch (option)
@@ -47,25 +43,22 @@ internal class MenuService
                 break;
 
             case "2":
-                break;
-
-            case "3":
                 //await ShowAllCasesMenu();
                 break;
 
-            case "4":
+            case "3":
                 //await SearchSpecificCaseMenu();
                 break;
 
-            case "5":
+            case "4":
                 //await UpdateStatusMenu();
                 break;
 
-            case "6":
+            case "5":
                 //await CreateCaseCommentMenu();
                 break;
 
-            case "7":
+            case "6":
                 Environment.Exit(1);
                 break;
 
@@ -79,34 +72,101 @@ internal class MenuService
 
     public async Task CreateCaseMenu()
     {
-        var _form = new CaseRegistrationForm();
         var _case = new CaseEntity();
 
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("\n------------ Create New Case -----------\n");
-        Console.Write("Client Firstname: "); Console.ForegroundColor = ConsoleColor.Gray;
-        _form.FirstName = Console.ReadLine() ?? "";
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.Write("Client Lastname: "); Console.ForegroundColor = ConsoleColor.Gray;
-        _form.LastName = Console.ReadLine() ?? "";
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.Write("Client Email: "); Console.ForegroundColor = ConsoleColor.Gray;
-        _form.ClientEmail = Console.ReadLine() ?? "";
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.Write("Client PhoneNumber: "); Console.ForegroundColor = ConsoleColor.Gray;
-        _form.ClientPhoneNumber = Console.ReadLine() ?? "";
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.Write("Describe the case: "); Console.ForegroundColor = ConsoleColor.Gray;
-        _form.CaseDescription = Console.ReadLine() ?? "";
-        _form.RegistrationDate = DateTime.Now;
-        _form.CaseStatus = "Not Started";
-        
-        var result = await _caseService.SaveAsync(_case);
-        if (result == null)
-            Console.WriteLine("\nA case with the same casenumber already exists.");
+        Console.WriteLine("\n---------------- Create New Case ---------------\n");
+        Console.Write("\n*Enter your Emailadress: "); Console.ForegroundColor = ConsoleColor.Gray;
+        string _email = Console.ReadLine() ?? "";
+        var _client = await _clientService.GetAsync(x => x.Email == _email);
+        if (_client != null)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine($"\nName: {_client.FirstName} {_client.LastName}");
+            Console.WriteLine($"Telephone number: {_client.PhoneNumber}");
+            Console.WriteLine($"Adress: {_client.Adress.StreetName}, {_client.Adress.PostalCode} {_client.Adress.City}");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("\n↑ Here is your profile information,\n  do you need to update it (yes/no)? ");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            string? _answer = Console.ReadLine();
+
+            while (true)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                switch (_answer)
+                {
+                    case "no":
+                        Console.WriteLine("\nOk, then continue with..");
+                        Console.Write("\n*Casetitle: ");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        string? _title = Console.ReadLine();
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write("\n*Describe the case: ");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        string? _description = Console.ReadLine();
+
+                        var _status = await _statusService.GetAsync(x => x.StatusName == "Not Started");
+
+                        _case.Id = new Guid();
+                        _case.ClientId = _client.Id;
+                        _case.RegistrationDate = DateTime.Now;
+                        _case.StatusType = _status;
+                        _status.Id = _case.StatusTypeId;
+
+                        if (!string.IsNullOrEmpty(_title))
+                        {
+                            _case.Title = _title;
+                            if (!string.IsNullOrEmpty(_description))
+                                _case.Description = _description;
+                                var result = await _caseService.SaveAsync(_case);
+                                if (result != null)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Yellow;
+                                    Console.WriteLine($"\nThank you {_client.FirstName}, a Case with id: {result?.Id} \nhave been created. We will get back to you as soon as possible.");
+                                    Console.WriteLine("\nPress a key to return to main menu..");
+                                }
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\nA case could not be created. Fill in all information needed and try again.");
+                            Console.WriteLine("Press a key to return to main menu..");
+                        }
+                        Console.ReadKey();
+                        await MainMenu();
+                        break;
+
+                    case "yes":
+                        
+                        await _clientService.UpdateAsync(_client);
+
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("\n---------------- Create New Case ---------------\n");
+                            Console.WriteLine("\nYour profile-information is updated ↓");
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                            Console.WriteLine($"\nName: {_client.FirstName} {_client.LastName}");
+                            Console.WriteLine($"Telephone number: {_client.PhoneNumber}");
+                            Console.WriteLine($"Adress: {_client.Adress.StreetName}, {_client.Adress.PostalCode} {_client.Adress.City}");
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            _answer = "no";
+                        break;
+
+                    default:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("\nI did not understand your answer, try again please (yes/no): ");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        _answer = Console.ReadLine();
+                        break;
+                }
+
+            }
+        }
         else
-            Console.WriteLine($"\nThank you, a Case with id: {result.Id} have been created.\nWe will get back to you as soon as possible.");
+            Console.WriteLine("\nSorry, I could not find you in our database. Enter a key and I will bring you back \nto type in a correct emailadress that you have registrated here ☻ "); 
+            Console.ReadKey();
+            await CreateCaseMenu();
     }
     /*
     public async Task ShowAllCasesMenu()

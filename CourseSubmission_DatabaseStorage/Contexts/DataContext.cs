@@ -16,6 +16,11 @@ internal class DataContext : DbContext
     {
         optionsBuilder.UseSqlServer(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\emmag\source\repos\Datalagring\CourseSubmission_DatabaseStorage\CourseSubmission_DatabaseStorage\Contexts\sql_db.mdf;Integrated Security=True;Connect Timeout=30");
     }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ClientEntity>()
+            .HasAlternateKey(x => x.Email);
+    }
     #endregion
 
     public DbSet<AdressEntity> Adresses { get; set; }

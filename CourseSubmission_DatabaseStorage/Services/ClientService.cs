@@ -8,6 +8,7 @@ namespace CourseSubmission_DatabaseStorage.Services;
 internal class ClientService : GenericService<ClientEntity>
 {
     private readonly DataContext _context = new DataContext();
+    private readonly AdressService _adressService = new();
 
     public override async Task<IEnumerable<ClientEntity>> GetAllAsync()
     {
@@ -24,62 +25,67 @@ internal class ClientService : GenericService<ClientEntity>
         return null!;
     }
 
-
-    /*
-    private readonly DataContext _context = new DataContext();
-    private readonly CaseService _caseService = new CaseService();
-
-    public async Task<IEnumerable<ClientEntity>> GetAllAsync()
+    public override async Task<ClientEntity> UpdateAsync(ClientEntity entity)
     {
-        return await _context.Clients.Include(x => x.Cases).ToListAsync();
-    }
+        var _adress = new AdressEntity();
+        var _updatedEntity = new ClientEntity();
 
-    public async Task<ClientEntity> GetAsync(int id)
-    {
-        var clientEntity = await _context.Clients.Include(x => x.Cases).FirstOrDefaultAsync(x => x.Guid == id);
-        if (clientEntity != null)
-            return clientEntity;
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("\nFill in the following..");
+        Console.Write("\nFirstname: ");
+        Console.ForegroundColor = ConsoleColor.Gray;
+        _updatedEntity.FirstName = Console.ReadLine() ?? "";
+        if (string.IsNullOrEmpty(_updatedEntity.FirstName))
+            _updatedEntity.FirstName = entity.FirstName;
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.Write("Lastname: ");
+        Console.ForegroundColor = ConsoleColor.Gray;
+        _updatedEntity.LastName = Console.ReadLine() ?? "";
+        if (string.IsNullOrEmpty(_updatedEntity.LastName))
+            _updatedEntity.LastName = entity.LastName;
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.Write("Telephone number: ");
+        Console.ForegroundColor = ConsoleColor.Gray;
+        _updatedEntity.PhoneNumber = Console.ReadLine() ?? "";
+        if (string.IsNullOrEmpty(_updatedEntity.PhoneNumber))
+            _updatedEntity.PhoneNumber = entity.PhoneNumber;
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.Write("Streetname: ");
+        Console.ForegroundColor = ConsoleColor.Gray;
+        _adress.StreetName = Console.ReadLine() ?? "";
+        if (string.IsNullOrEmpty(_adress.StreetName))
+            _adress.StreetName = entity.Adress.StreetName;
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.Write("Postalcode (5): ");
+        Console.ForegroundColor = ConsoleColor.Gray;
+        _adress.PostalCode = Console.ReadLine() ?? "";
+        if (string.IsNullOrEmpty(_adress.PostalCode))
+            _adress.PostalCode = entity.Adress.PostalCode;
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.Write("City: ");
+        Console.ForegroundColor = ConsoleColor.Gray;
+        _adress.City = Console.ReadLine() ?? "";
+        if (string.IsNullOrEmpty(_adress.City))
+            _adress.City = entity.Adress.City;
+        Console.ForegroundColor = ConsoleColor.Yellow;
 
-        return null!;
-    }
-
-    public async Task DeleteAsync(int id)
-    {
-        var clientEntity = await _context.Clients.FirstOrDefaultAsync(x => x.Id == id);
-        if (clientEntity != null)
+        var _newAdress = await _adressService.SaveAsync(_adress);
+        if (_newAdress != null)
         {
-            _context.Remove(clientEntity);
-            await _context.SaveChangesAsync();
+            _updatedEntity.AdressId = _newAdress.Id;
+            _updatedEntity.Adress = _newAdress;
         }
-    }
-
-    public async Task<ClientEntity> CreateAsync(CaseRegistrationForm form)
-    {
-        if (await _context.Clients.AnyAsync(x => x.Id == form.ClientId))
-            return null!;
-
-        var clientEntity = new ClientEntity()
+        else
         {
-            Id = form.ClientId,
-            FirstName = form.FirstName,
-            LastName = form.LastName,
-            Email = form.ClientEmail,
-            PhoneNumber = form.ClientPhoneNumber,
-            // Cases = (await _caseService.GetOrCreateIfNotExistsAsync(form.Cases)).Id
-        };
+            _updatedEntity.Adress = entity.Adress;
+            _updatedEntity.AdressId = entity.AdressId;
+        }
 
-        var caseEntity = new CaseEntity()
-        {
-            Description = form.CaseDescription,
-            RegistrationDate = form.RegistrationDate,
-            CaseStatus = form.CaseStatus,
-        };
+        _updatedEntity.Id = entity.Id;
+        _updatedEntity.Email = entity.Email;
 
-
-        _context.Add(clientEntity);
+        _context.Update(_updatedEntity);     
         await _context.SaveChangesAsync();
-
-        return clientEntity;
+        return _updatedEntity;
     }
-    */
 }

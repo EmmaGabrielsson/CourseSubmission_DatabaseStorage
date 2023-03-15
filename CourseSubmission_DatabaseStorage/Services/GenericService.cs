@@ -6,7 +6,7 @@ namespace CourseSubmission_DatabaseStorage.Services;
 
 internal abstract class GenericService<TEntity> where TEntity : class
 {
-    private readonly DataContext _context = new DataContext();
+    private readonly DataContext _context = new();
 
     public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
     {
@@ -22,11 +22,10 @@ internal abstract class GenericService<TEntity> where TEntity : class
         return null!;
     }
 
-
     public virtual async Task<TEntity> SaveAsync(TEntity entity)
     {
         _context.Add(entity);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(); 
         return entity;
     }
 
@@ -42,4 +41,18 @@ internal abstract class GenericService<TEntity> where TEntity : class
 
         return item;
     }
+
+    public virtual async Task<TEntity> UpdateAsync(TEntity entity)
+    {
+        _context.Update(entity);
+        await _context.SaveChangesAsync();
+        return entity;
+    }
+
+    public virtual async Task DeleteAsync(TEntity entity)
+    {
+            _context.Remove(entity);
+            await _context.SaveChangesAsync();
+    }
+
 }
