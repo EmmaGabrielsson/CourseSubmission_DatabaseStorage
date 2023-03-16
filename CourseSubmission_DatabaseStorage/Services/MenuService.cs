@@ -9,6 +9,7 @@ internal class MenuService
     private readonly StatusTypeService _statusService = new();
     private readonly EmployeeService _employeeService = new();
     private readonly CommentService _commentService = new();
+    private readonly AdressService _adressService = new();
     public async Task MainMenu()
     {
         Console.Clear();
@@ -66,11 +67,8 @@ internal class MenuService
         Console.ReadKey();
     }
 
-    //need to fix yes option in switch to update clientinfo without empty values in db
     public async Task CreateCaseMenu()
     {
-        var _case = new CaseEntity();
-
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine("\n---------------- Create New Case ---------------\n");
@@ -96,6 +94,8 @@ internal class MenuService
                 switch (_answer)
                 {
                     case "no":
+                        var _case = new CaseEntity();
+
                         Console.WriteLine("\nOk, then continue with..");
                         Console.Write("\n*Casetitle: ");
                         Console.ForegroundColor = ConsoleColor.Gray;
@@ -110,7 +110,6 @@ internal class MenuService
                         _case.Id = new Guid();
                         _case.ClientId = _client.Id;
                         _case.RegistrationDate = DateTime.Now;
-                        _case.StatusType = _status;
                         _case.StatusTypeId = _status.Id;
 
                         if (!string.IsNullOrEmpty(_title))
@@ -118,11 +117,11 @@ internal class MenuService
                             _case.Title = _title;
                             if (!string.IsNullOrEmpty(_description))
                                 _case.Description = _description;
-                                var result = await _caseService.SaveAsync(_case);
-                                if (result != null)
+                                var _result = await _caseService.SaveAsync(_case);
+                                if (_result != null)
                                 {
                                     Console.ForegroundColor = ConsoleColor.Yellow;
-                                    Console.WriteLine($"\n\nThank you {_client.FirstName}, a Case with id: {result?.Id} \nhave been created. We will get back to you as soon as possible.");
+                                    Console.WriteLine($"\n\nThank you {_client.FirstName}, a Case with id: {_result.Id} \nhave been created. We will get back to you as soon as possible.");
                                     Console.WriteLine("\nPress a key to return to main menu..");
                                 }
                         }
@@ -137,7 +136,66 @@ internal class MenuService
                         break;
 
                     case "yes":
-                        
+                        var _adress = new AdressEntity();
+
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("\nFill in the following..");
+                        Console.Write("\nFirstname: ");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        string? _firstName = Console.ReadLine();
+                        if (!string.IsNullOrEmpty(_firstName))
+                            _client.FirstName = _firstName;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write("Lastname: ");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        string? _lastName = Console.ReadLine();
+                        if (!string.IsNullOrEmpty(_lastName))
+                            _client.LastName = _lastName;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write("Phone number (ex. +4670-1234567): ");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        string? _phoneNumber = Console.ReadLine()?.Trim();
+                        if (!string.IsNullOrEmpty(_phoneNumber))
+                            _client.PhoneNumber = _phoneNumber;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write("Streetname: ");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        string? _streetName = Console.ReadLine();
+                        if (!string.IsNullOrEmpty(_streetName))
+                            _adress.StreetName = _streetName;
+                        else 
+                            _adress.StreetName = _client.Adress.StreetName;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write("Postalcode (ex. 12345): ");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        var _postalCode = Console.ReadLine();
+                        if (!string.IsNullOrEmpty(_postalCode))
+                            _adress.PostalCode = _postalCode;
+                        else 
+                            _adress.PostalCode = _client.Adress.PostalCode;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write("City: ");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        string? _city = Console.ReadLine();
+                        if (!string.IsNullOrEmpty(_city))
+                            _adress.City = _city;
+                        else
+                            _adress.City = _client.Adress.City;
+
+                        var _searchAdress = await _adressService.GetAsync(x => x.StreetName == _adress.StreetName && x.PostalCode == _adress.PostalCode && x.City == _adress.City);
+
+                        if (_searchAdress != null)
+                        {
+                            _client.AdressId = _searchAdress.Id;
+                            _client.Adress = _searchAdress;
+                        }
+                        else
+                        {
+                            await _adressService.SaveAsync(_adress);
+                            _client.AdressId = _adress.Id;
+                            _client.Adress = _adress;
+                        }
+
                         await _clientService.UpdateAsync(_client);
 
                             Console.Clear();
@@ -162,6 +220,7 @@ internal class MenuService
             }
         }
         else
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("\nSorry, I could not find you in our database. Enter a key and I will bring you back \nto type in a correct emailadress that you have registrated here ☻ "); 
             Console.ReadKey();
             await CreateCaseMenu();
@@ -249,6 +308,7 @@ internal class MenuService
         }
     }
 
+    //starting create case without clearscreen when press a key to return to main menu
     public async Task SearchSpecificCaseMenu()
     {
         Console.Clear();
