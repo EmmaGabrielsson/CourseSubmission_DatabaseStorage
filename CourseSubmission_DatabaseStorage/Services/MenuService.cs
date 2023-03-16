@@ -88,7 +88,7 @@ internal class MenuService
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("\n↑ Here is your profile information,\n  do you need to update it (yes/no)? ");
             Console.ForegroundColor = ConsoleColor.Gray;
-            string? _answer = Console.ReadLine();
+            string? _answer = Console.ReadLine()?.ToLower();
 
             while (true)
             {
@@ -111,7 +111,7 @@ internal class MenuService
                         _case.ClientId = _client.Id;
                         _case.RegistrationDate = DateTime.Now;
                         _case.StatusType = _status;
-                        _status.Id = _case.StatusTypeId;
+                        _case.StatusTypeId = _status.Id;
 
                         if (!string.IsNullOrEmpty(_title))
                         {
@@ -156,10 +156,9 @@ internal class MenuService
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write("\nI did not understand your answer, try again please (yes/no): ");
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        _answer = Console.ReadLine();
+                        _answer = Console.ReadLine()?.ToLower();
                         break;
                 }
-
             }
         }
         else
@@ -327,7 +326,7 @@ internal class MenuService
         }
     }
 
-    //need to fix if enter wrong statusinput in else
+    //need to fix that sometimes the status is not saved correct?
     public async Task CreateCommentAndUpdateStatusMenu()
     {
         Console.Clear();
@@ -351,6 +350,7 @@ internal class MenuService
             Console.WriteLine($"\nTitle: {_foundCase.Title}");
             Console.WriteLine($"Description: {_foundCase.Description}");
             Console.WriteLine($"Client: {_foundCase.Client.FirstName} {_foundCase.Client.LastName}");
+
             if (_foundCase.Comments.Any())
             {
                 Console.WriteLine($"\nComments");
@@ -366,60 +366,68 @@ internal class MenuService
             Console.WriteLine("-----------------------------------------------------------------------------");
             Console.Write("Hi employee, can you enter your lastname: ");
             Console.ForegroundColor = ConsoleColor.Gray;
-            string? _employeeLastName = Console.ReadLine();
+            string? _employeeLastName = Console.ReadLine()?.ToLower();
 
-            var _employee = await _employeeService.GetAsync(x => x.LastName.ToLower() == _employeeLastName!.ToLower());
-
-            if (_employee != null)
+            bool _runIf = true;
+            while (_runIf == true)
             {
-                var _createdComment = new CommentEntity();
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write("Enter your comment: ");
-                Console.ForegroundColor = ConsoleColor.Gray;
-                string? _textComment = Console.ReadLine();
+            var _employee = await _employeeService.GetAsync(x => x.LastName.ToLower() == _employeeLastName);
 
-                if (!string.IsNullOrEmpty(_textComment))
+                if (_employee != null)
                 {
-                    _createdComment.CaseId = _foundCase.Id;
-                    _createdComment.Created = DateTime.Now;
-                    _createdComment.EmployeeId = _employee.Id;
-                    _createdComment.Id = new Guid();
-                    _createdComment.TextComment = _textComment;
-                    await _commentService.SaveAsync(_createdComment);
+                    var _createdComment = new CommentEntity();
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine($"\nThank you, the comment is now created.");
-                    Console.Write("What status do you want to update the case to (ongoing/completed): ");
+                    Console.Write("Enter your comment: ");
                     Console.ForegroundColor = ConsoleColor.Gray;
-                    string? _statusOption = Console.ReadLine();
+                    string? _textComment = Console.ReadLine()!;
 
-                    var _status = await _statusService.GetAsync(x => x.StatusName.ToLower() == _statusOption!.ToLower());
-
-                    if (_status != null)
+                    if (!string.IsNullOrEmpty(_textComment))
                     {
-                        _foundCase.StatusTypeId = _status.Id;
-                        _foundCase.StatusType = _status;
-                        _foundCase.UpdatedDate = DateTime.Now;
-                        await _caseService.UpdateAsync(_foundCase);
+                        _createdComment.CaseId = _foundCase.Id;
+                        _createdComment.Created = DateTime.Now;
+                        _createdComment.EmployeeId = _employee.Id;
+                        _createdComment.Id = new Guid();
+                        _createdComment.TextComment = _textComment;
+                        await _commentService.SaveAsync(_createdComment);
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine($"\nThank you, the status of the case is now updated.");
-                        Console.WriteLine("-----------------------------------------------------------------------------");
-                        Console.WriteLine("\nPress a key to return to main menu..");
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("\nInvalid input, try again.. ");
+                        Console.WriteLine($"\nThank you, the comment is now created.");
+                        Console.Write("What status do you want to update the case to (not started/ongoing/completed): ");
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        _statusOption = Console.ReadLine();
+                        string? _statusOption = Console.ReadLine()?.ToLower();
+
+                        bool _runIfStatus = true;
+                        while (_runIfStatus == true)
+                        {
+                            var _status = await _statusService.GetAsync(x => x.StatusName.ToLower() == _statusOption);
+                            if (_status != null)
+                            {
+                                _foundCase.StatusTypeId = _status.Id;
+                                _foundCase.StatusType = _status;
+                                _foundCase.UpdatedDate = DateTime.Now;
+                                await _caseService.UpdateAsync(_foundCase);
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                Console.WriteLine($"\nThank you, the status of the case is now updated.");
+                                Console.WriteLine("\nPress a key to return to main menu..");
+                                _runIfStatus = false;
+                            }
+                            else
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.Write("\nInvalid input, try again.. ");
+                                Console.ForegroundColor = ConsoleColor.Gray;
+                                _statusOption = Console.ReadLine()?.ToLower();
+                            }
+                        }
                     }
+                    _runIf = false;
                 }
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write("\nI could not find you, did you spell your lastname right? \nEnter your lastname again: ");
-                Console.ForegroundColor = ConsoleColor.Gray;
-                _employeeLastName = Console.ReadLine();
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write("\nI could not find you, did you spell your lastname right? \nEnter your lastname again: ");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    _employeeLastName = Console.ReadLine()?.ToLower();
+                }
             }
         }
         else

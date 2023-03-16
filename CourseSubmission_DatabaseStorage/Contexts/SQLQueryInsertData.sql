@@ -23,7 +23,7 @@ VALUES
 
 INSERT INTO StatusTypes
 VALUES 
-('Not Started'),
+('Not started'),
 ('Ongoing'),
 ('Completed');
 Go

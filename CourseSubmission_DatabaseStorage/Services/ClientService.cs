@@ -60,7 +60,7 @@ internal class ClientService : GenericService<ClientEntity>
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("Streetname: ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _adress.StreetName = Console.ReadLine()!;
+        _adress.StreetName = Console.ReadLine()!.ToLower();
         if (string.IsNullOrEmpty(_adress.StreetName))
             _adress.StreetName = entity.Adress.StreetName;
         Console.ForegroundColor = ConsoleColor.Yellow;
@@ -72,15 +72,17 @@ internal class ClientService : GenericService<ClientEntity>
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("City: ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _adress.City = Console.ReadLine()!;
+        _adress.City = Console.ReadLine()!.ToLower();
         if (string.IsNullOrEmpty(_adress.City))
             _adress.City = entity.Adress.City;
         Console.ForegroundColor = ConsoleColor.Yellow;
 
-        var _newAdress = await _adressService.SaveAsync(_adress, x => x.StreetName == _adress.StreetName && x.PostalCode == _adress.PostalCode && x.City == _adress.City);
+        var _newAdress = await _adressService.SaveAsync(_adress, x => x.StreetName.ToLower() == _adress.StreetName && x.PostalCode == _adress.PostalCode && x.City.ToLower() == _adress.City);
+        
         if (_newAdress != null)
         {
             entity.AdressId = _newAdress.Id;
+            entity.Adress = _newAdress;
         }
 
         _context.Update(entity);     
