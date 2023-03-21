@@ -11,7 +11,21 @@ internal class CaseService : GenericService<CaseEntity>
 
     public override async Task<IEnumerable<CaseEntity>> GetAllAsync()
     {
-        return await _context.Cases.Include(x => x.Client).Include(x => x.StatusType).ToListAsync();
+        return await _context.Cases
+            .Include(x => x.Client)
+            .Include(x => x.StatusType)
+            .ToListAsync();
+    }
+
+    public virtual async Task<IEnumerable<CaseEntity>> GetAllActiveAsync()
+    {
+        return await _context.Cases
+        .Include(x => x.Client)
+        .Include(x => x.StatusType)
+        .Where(x => x.StatusType.StatusName.ToLower() != "completed" )
+        .OrderByDescending(x => x.RegistrationDate)
+        .ToListAsync();
+
     }
 
     public override async Task<CaseEntity> GetAsync(Expression<Func<CaseEntity, bool>> predicate)
@@ -25,6 +39,21 @@ internal class CaseService : GenericService<CaseEntity>
         if (item != null)
             return item;
 
+        return null!;
+    }
+
+    public async Task<CaseEntity> UpdateCaseStatusAsync(Guid caseId, int statusId)
+    {
+        var _entity = await _context.Cases.FindAsync(caseId);
+
+        if(_entity != null)
+        {
+            _entity.UpdatedDate = DateTime.Now;
+            _entity.StatusTypeId = statusId;
+            _context.Update(_entity);
+            await _context.SaveChangesAsync();
+            return _entity;
+        }
         return null!;
     }
 }

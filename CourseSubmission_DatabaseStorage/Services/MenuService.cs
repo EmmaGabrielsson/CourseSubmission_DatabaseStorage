@@ -23,17 +23,19 @@ internal class MenuService
         Console.WriteLine("  ♦                                       ♦");
         Console.WriteLine("  ♦  2. View all Cases in the database.   ♦");
         Console.WriteLine("  ♦                                       ♦");
-        Console.WriteLine("  ♦  3. Search for a specific Case with   ♦");
+        Console.WriteLine("  ♦  3. View all Active Cases in order.   ♦");
+        Console.WriteLine("  ♦                                       ♦");
+        Console.WriteLine("  ♦  4. Search for a specific Case with   ♦");
         Console.WriteLine("  ♦    \"CaseId\" to view more info &       ♦");
         Console.WriteLine("  ♦     comments.                         ♦");
         Console.WriteLine("  ♦                                       ♦");
-        Console.WriteLine("  ♦  4. Create a Comment on a Case &      ♦");
+        Console.WriteLine("  ♦  5. Create a Comment on a Case &      ♦");
         Console.WriteLine("  ♦     Update its Status.                ♦");
         Console.WriteLine("  ♦                                       ♦");
-        Console.WriteLine("  ♦  5. Exit the program.                 ♦");
+        Console.WriteLine("  ♦  6. Exit the program.                 ♦");
         Console.WriteLine("  ♦                                       ♦");
         Console.WriteLine("  ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦ ♦\n");
-        Console.Write("\n  ☻ Enter a menu option (1-5): ");
+        Console.Write("\n  ☻ Enter a menu option ↑ (1-5): ");
         Console.ForegroundColor = ConsoleColor.Gray;
         var option = Console.ReadLine();
 
@@ -48,14 +50,18 @@ internal class MenuService
                 break;
 
             case "3":
-                await SearchSpecificCaseMenu();
+                await ViewAllActiveCases();
                 break;
 
             case "4":
-                await CreateCommentAndUpdateStatusMenu();
+                await SearchSpecificCaseMenu();
                 break;
 
             case "5":
+                await CreateCommentAndUpdateStatusMenu();
+                break;
+
+            case "6":
                 Environment.Exit(1);
                 break;
 
@@ -67,7 +73,7 @@ internal class MenuService
         Console.ReadKey();
     }
 
-    public async Task CreateCaseMenu()
+    private async Task CreateCaseMenu()
     {
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.Yellow;
@@ -88,7 +94,8 @@ internal class MenuService
             Console.ForegroundColor = ConsoleColor.Gray;
             string? _answer = Console.ReadLine()?.ToLower();
 
-            while (true)
+            bool _run = true;
+            while (_run)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 switch (_answer)
@@ -105,7 +112,7 @@ internal class MenuService
                         Console.ForegroundColor = ConsoleColor.Gray;
                         string? _description = Console.ReadLine();
 
-                        var _status = await _statusService.GetAsync(x => x.StatusName == "Not Started");
+                        var _status = await _statusService.GetAsync(x => x.StatusName.ToLower() == "not started");
 
                         _case.Id = new Guid();
                         _case.ClientId = _client.Id;
@@ -131,8 +138,7 @@ internal class MenuService
                             Console.WriteLine("\nA case could not be created. Fill in all information needed and try again.");
                             Console.WriteLine("Press a key to return to main menu..");
                         }
-                        Console.ReadKey();
-                        await MainMenu();
+                        _run = false;
                         break;
 
                     case "yes":
@@ -182,7 +188,7 @@ internal class MenuService
                         else
                             _adress.City = _client.Adress.City;
 
-                        var _searchAdress = await _adressService.GetAsync(x => x.StreetName == _adress.StreetName && x.PostalCode == _adress.PostalCode && x.City == _adress.City);
+                        var _searchAdress = await _adressService.GetOrCreateAsync(_adress, x => x.StreetName == _adress.StreetName && x.PostalCode == _adress.PostalCode && x.City == _adress.City);
 
                         if (_searchAdress != null)
                         {
@@ -220,10 +226,12 @@ internal class MenuService
             }
         }
         else
+        {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("\nSorry, I could not find you in our database. Enter a key and I will bring you back \nto type in a correct emailadress that you have registrated here ☻ "); 
             Console.ReadKey();
             await CreateCaseMenu();
+        }
     }
     /*
     public async Task ShowAllCasesMenu()
@@ -275,8 +283,7 @@ internal class MenuService
 
     }
     */
-    //need to fix clearscreen after returning to main menu after view all cases
-    public async Task ViewAllCasesMenu()
+    private async Task ViewAllCasesMenu()
     {
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.Yellow;
@@ -307,9 +314,40 @@ internal class MenuService
             Console.WriteLine("\nPress a key to return to main menu..");
         }
     }
+    private async Task ViewAllActiveCases()
+    {
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("\n--------------- View All Active Cases in descending order --------------\n");
 
-    //starting create case without clearscreen when press a key to return to main menu
-    public async Task SearchSpecificCaseMenu()
+        var _resultList = await _caseService.GetAllActiveAsync();
+
+        if (_resultList.Any())
+        {
+            foreach (var _result in _resultList)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine($"Case Id: {_result.Id}");
+                Console.WriteLine($"Created: {_result.RegistrationDate}");
+                Console.WriteLine($"Status: {_result.StatusType.StatusName}");
+                Console.WriteLine($"Title: {_result.Title}");
+                Console.WriteLine($"Clients email: {_result.Client.Email}\n");
+            }
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("------------------------------------------------------------------------\n");
+            Console.WriteLine("\nPress a key to return to main menu..");
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Could not find any cases because there is no \nregistrated cases in the database.");
+            Console.WriteLine("\n------------------------------------------------------------------------\n");
+            Console.WriteLine("\nPress a key to return to main menu..");
+        }
+
+    }
+
+    private async Task SearchSpecificCaseMenu()
     {
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.Yellow;
@@ -336,8 +374,8 @@ internal class MenuService
 
             if (_foundCase.Comments.Any())
             {
-                Console.WriteLine($"Emplyee Comments");
-                Console.WriteLine("-----------------");
+                Console.WriteLine($"Employee Comments");
+                Console.WriteLine("------------------");
                 foreach (var comment in _foundCase.Comments)
                 {
                     Console.WriteLine($"Comment Id: {comment.Id}");
@@ -350,6 +388,8 @@ internal class MenuService
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("------------------------------------------------------\n");
             Console.WriteLine("Press a key to return to main menu..");
+            Console.ReadKey();
+            await MainMenu();
         }
         else
         {
@@ -386,15 +426,14 @@ internal class MenuService
         }
     }
 
-    //need to fix that sometimes the status is not saved correct?
-    public async Task CreateCommentAndUpdateStatusMenu()
+    private async Task CreateCommentAndUpdateStatusMenu()
     {
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine("\n------------------ Update Status & Create Comment on a Case -----------------\n");
         Console.Write("Enter Case Id: ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        var _searchId = Console.ReadLine();
+        string? _searchId = Console.ReadLine();
 
         var _foundCase = await _caseService.GetAsync(x => (x.Id).ToString() == _searchId);
 
@@ -453,7 +492,8 @@ internal class MenuService
                         Console.WriteLine($"\nThank you, the comment is now created.");
                         Console.Write("What status do you want to update the case to (not started/ongoing/completed): ");
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        string? _statusOption = Console.ReadLine()?.ToLower();
+                        string _statusOption = Console.ReadLine()!.ToLower();
+
 
                         bool _runIfStatus = true;
                         while (_runIfStatus == true)
@@ -461,12 +501,10 @@ internal class MenuService
                             var _status = await _statusService.GetAsync(x => x.StatusName.ToLower() == _statusOption);
                             if (_status != null)
                             {
-                                _foundCase.StatusTypeId = _status.Id;
-                                _foundCase.StatusType = _status;
-                                _foundCase.UpdatedDate = DateTime.Now;
-                                await _caseService.UpdateAsync(_foundCase);
+                                var _case = await _caseService.GetAsync(x => (x.Id).ToString() == _searchId);
+                                var _updatedCase = await _caseService.UpdateCaseStatusAsync(_case.Id, _status.Id);
                                 Console.ForegroundColor = ConsoleColor.Yellow;
-                                Console.WriteLine($"\nThank you, the status of the case is now updated.");
+                                Console.WriteLine($"\nThank you, the status of the case is now updated to {_status.StatusName}.");
                                 Console.WriteLine("\nPress a key to return to main menu..");
                                 _runIfStatus = false;
                             }
@@ -475,7 +513,7 @@ internal class MenuService
                                 Console.ForegroundColor = ConsoleColor.Red;
                                 Console.Write("\nInvalid input, try again.. ");
                                 Console.ForegroundColor = ConsoleColor.Gray;
-                                _statusOption = Console.ReadLine()?.ToLower();
+                                _statusOption = Console.ReadLine()!.ToLower();
                             }
                         }
                     }
@@ -498,10 +536,9 @@ internal class MenuService
             Console.WriteLine("-----------------------------------------------------------------------------\n");
             Console.WriteLine("Press a key to return to main menu..");
         }
-
     }
 
-    public static void ErrorMenu()
+    private static void ErrorMenu()
     {
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.Red;

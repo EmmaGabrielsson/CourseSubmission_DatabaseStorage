@@ -6,6 +6,8 @@ internal class Program
     {
         var _menu = new MenuService();
         while (true)
+        {
             await _menu.MainMenu();
+        }
     }
 }

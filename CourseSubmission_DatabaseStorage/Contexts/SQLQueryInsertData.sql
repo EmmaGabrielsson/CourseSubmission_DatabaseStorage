@@ -4,7 +4,9 @@ VALUES
 ('Gamlavägen 12', 27561, 'Göteborg'),
 ('Floravägen 60', 12345, 'Göteborg'),
 ('Ängsvägen 22', 54321, 'Halmstad'),
-('Villagatan 56', 65425, 'Göteborg');
+('Villagatan 56', 65425, 'Göteborg'),
+('Nordkapsvägen 14', 25469, 'Vega');
+
 
 INSERT INTO Roles
 VALUES 
@@ -34,7 +36,8 @@ VALUES
 ('5f72fd36-b497-4481-b4dd-f6a98f12fb7a', 'Emma', 'Gabrielsson', 'emma@example.com', '+4673-8502456', 2),
 ('e39e810a-a16d-40d9-9fe3-44e2fd9bbe98', 'Ingemar', 'Eriksson', 'ingemar@example.com', '+4673-5696811', 1),
 ('5be79af7-42d0-43eb-a40f-c6c0896389da', 'Siv', 'Nordholm', 'siv@example.com', '+4672-2545123', 4),
-('28ad7fbe-9365-4e69-8af3-7b07b879d090', 'Sören', 'Larsson', 'sören@example.com', '+4670-5896332', 5);
+('28ad7fbe-9365-4e69-8af3-7b07b879d090', 'Sören', 'Larsson', 'sören@example.com', '+4670-5896332', 5),
+('a45633ad-a9c7-4edc-9561-338bfcfe4c8d', 'Hans', 'Mattin-Lassei', 'hans@example.com', '+4670-2583699', 6);
 Go
 
 INSERT INTO Cases

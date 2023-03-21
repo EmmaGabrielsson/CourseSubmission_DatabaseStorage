@@ -15,11 +15,24 @@ internal abstract class GenericService<TEntity> where TEntity : class
 
     public virtual async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate)
     {
-        var item = await _context.Set<TEntity>().FirstOrDefaultAsync(predicate, CancellationToken.None);
-        if (item != null)
-            return item;
+        var _item = await _context.Set<TEntity>().FirstOrDefaultAsync(predicate, CancellationToken.None);
+        if (_item != null)
+            return _item;
 
         return null!;
+    }
+
+    public virtual async Task<TEntity> GetOrCreateAsync(TEntity entity,Expression<Func<TEntity, bool>> predicate)
+    {
+        var _item = await _context.Set<TEntity>().FirstOrDefaultAsync(predicate, CancellationToken.None);
+        if (_item != null)
+            return _item;
+        else
+        {
+            _context.Add(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
     }
 
     public virtual async Task<TEntity> SaveAsync(TEntity entity)
