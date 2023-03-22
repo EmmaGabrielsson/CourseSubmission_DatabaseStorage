@@ -15,7 +15,6 @@ internal class DataContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\emmag\source\repos\Datalagring\CourseSubmission_DatabaseStorage\CourseSubmission_DatabaseStorage\Contexts\sql_db.mdf;Integrated Security=True;Connect Timeout=30");
-        optionsBuilder.EnableSensitiveDataLogging();
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,12 +23,12 @@ internal class DataContext : DbContext
     }
     #endregion
 
-    public DbSet<AdressEntity> Adresses { get; set; }
     public DbSet<StatusTypeEntity> StatusTypes { get; set; }
+    public DbSet<AdressEntity> Adresses { get; set; }
+    public DbSet<RoleEntity> Roles { get; set; }
+    public DbSet<EmployeeEntity> Employees { get; set; }
     public DbSet<ClientEntity> Clients { get; set; }
     public DbSet<CaseEntity> Cases { get; set; }
     public DbSet<CommentEntity> Comments { get; set; }
-    public DbSet<EmployeeEntity> Employees { get; set; }
-    public DbSet<RoleEntity> Roles { get; set; }
 
 }

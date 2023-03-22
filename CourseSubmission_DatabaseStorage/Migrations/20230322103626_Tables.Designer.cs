@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourseSubmission_DatabaseStorage.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230314142925_Tables")]
+    [Migration("20230322103626_Tables")]
     partial class Tables
     {
         /// <inheritdoc />
@@ -110,6 +110,8 @@ namespace CourseSubmission_DatabaseStorage.Migrations
                         .HasColumnType("char(13)");
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("Email");
 
                     b.HasIndex("AdressId");
 

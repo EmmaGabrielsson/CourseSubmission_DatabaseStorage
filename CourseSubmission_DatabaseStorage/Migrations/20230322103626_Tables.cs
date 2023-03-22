@@ -66,6 +66,7 @@ namespace CourseSubmission_DatabaseStorage.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Clients", x => x.Id);
+                    table.UniqueConstraint("AK_Clients_Email", x => x.Email);
                     table.ForeignKey(
                         name: "FK_Clients_Adresses_AdressId",
                         column: x => x.AdressId,

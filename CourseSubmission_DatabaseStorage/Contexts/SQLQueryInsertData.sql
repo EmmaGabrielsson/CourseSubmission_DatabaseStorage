@@ -1,11 +1,11 @@
 ﻿INSERT INTO Adresses
 VALUES 
-('Sveavägen 3', 34512, 'Halmstad'),
+('Sveavägen 3', 34512, 'Göteborg'),
 ('Gamlavägen 12', 27561, 'Göteborg'),
 ('Floravägen 60', 12345, 'Göteborg'),
-('Ängsvägen 22', 54321, 'Halmstad'),
+('Ängsvägen 22', 54321, 'Göteborg'),
 ('Villagatan 56', 65425, 'Göteborg'),
-('Nordkapsvägen 14', 25469, 'Vega');
+('Nordkapsvägen 14', 25469, 'Göteborg');
 
 
 INSERT INTO Roles

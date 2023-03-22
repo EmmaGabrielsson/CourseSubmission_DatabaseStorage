@@ -340,7 +340,7 @@ internal class MenuService
         else
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Could not find any cases because there is no \nregistrated cases in the database.");
+            Console.WriteLine("Could not find any cases because there is no \nactive cases in the database.");
             Console.WriteLine("\n------------------------------------------------------------------------\n");
             Console.WriteLine("\nPress a key to return to main menu..");
         }
@@ -359,6 +359,7 @@ internal class MenuService
 
         if (_foundCase != null)
         {
+            var _clientAdress = await _adressService.GetAsync(x => x.Id == _foundCase.Client.AdressId);
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine($"\nCase Id: {_foundCase.Id}");
             Console.WriteLine($"Case Created: {_foundCase.RegistrationDate}");
@@ -369,7 +370,7 @@ internal class MenuService
             Console.WriteLine($"Title: {_foundCase.Title}");
             Console.WriteLine($"Description: {_foundCase.Description}\n");
             Console.WriteLine($"Client: {_foundCase.Client.FirstName} {_foundCase.Client.LastName}");
-            Console.WriteLine($"Clients adress: {_foundCase.Client.Adress.StreetName}, {_foundCase.Client.Adress.PostalCode} {_foundCase.Client.Adress.City}");
+            Console.WriteLine($"Clients adress: {_clientAdress.StreetName}, {_clientAdress.PostalCode} {_clientAdress.City}");
             Console.WriteLine($"Clients email: {_foundCase.Client.Email}\n");
 
             if (_foundCase.Comments.Any())
@@ -440,7 +441,7 @@ internal class MenuService
         if (_foundCase != null)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"\nHere are some brief info about the case you want to update");
+            Console.WriteLine($"\nHere are some brief info about the case you want to update ↓");
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine($"\nCurrent Status: {_foundCase.StatusType.StatusName}\n");
             if (!string.IsNullOrEmpty(_foundCase.UpdatedDate.ToString()))
