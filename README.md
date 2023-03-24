@@ -19,11 +19,12 @@ This is a console application built using C# that uses Entity Framework Core to 
 ## Functionality
 The console app allows you to perform the following operations:
 - Create a new case
+- Create a new user/client
+- Delete a user/client
 - View all cases in the database
 - View all active-cases in the database
 - View a specific case by its ID and all comments related to it
-- Update the status of a case
-- Add a comment to a case
+- Add a comment to a case and Update the status of it 
 
 ## Database structure
 The app uses a code-first approach to create the database and tables. The database structure is normalized in 1-3NF, with seven tables that have a relationship to each other. When the application is run for the first time, some data is automatically initialized to all tables in the database.
