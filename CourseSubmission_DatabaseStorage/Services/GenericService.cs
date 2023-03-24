@@ -15,7 +15,7 @@ internal abstract class GenericService<TEntity> where TEntity : class
 
     public virtual async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate)
     {
-        var _item = await _context.Set<TEntity>().FirstOrDefaultAsync(predicate, CancellationToken.None);
+        var _item = await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
         if (_item != null)
             return _item;
 
@@ -24,12 +24,12 @@ internal abstract class GenericService<TEntity> where TEntity : class
 
     public virtual async Task<TEntity> GetOrCreateAsync(TEntity entity,Expression<Func<TEntity, bool>> predicate)
     {
-        var _item = await _context.Set<TEntity>().FirstOrDefaultAsync(predicate, CancellationToken.None);
+        var _item = await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
         if (_item != null)
             return _item;
         else
         {
-            _context.Add(entity);
+            await _context.AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
@@ -37,7 +37,7 @@ internal abstract class GenericService<TEntity> where TEntity : class
 
     public virtual async Task<TEntity> SaveAsync(TEntity entity)
     {
-        _context.Add(entity);
+        await _context.AddAsync(entity);
         await _context.SaveChangesAsync(); 
         return entity;
     }
@@ -54,5 +54,4 @@ internal abstract class GenericService<TEntity> where TEntity : class
             _context.Remove(entity);
             await _context.SaveChangesAsync();
     }
-
 }

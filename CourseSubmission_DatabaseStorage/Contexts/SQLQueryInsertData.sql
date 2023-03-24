@@ -42,14 +42,14 @@ Go
 
 INSERT INTO Cases
 VALUES 
-('f98b98fb-0470-4096-90cd-0b05d8be9fc9', 'Snöras', 'Det har rasat ner jättemycket snö från taket rakt ovanför entrén, så just nu är det svårt att ta sig ut där.', '2023-03-14 14:08:54', '2023-03-14 16:00:23', 3, '28ad7fbe-9365-4e69-8af3-7b07b879d090'),
-('6bad8146-7c0e-41d1-b646-377cd98d6c0e', 'Problem med fibernätet', 'Kopplingsdosan till fibernätet i lägenheten blinkar rött och fungerar inte riktigt. Provat starta om den, men den hittar ingen koppling.', '2023-03-10 15:28:14', '2023-03-13 10:08:54', 3, '5be79af7-42d0-43eb-a40f-c6c0896389da'),
-('c5d7c1c5-be5c-441f-b756-3635616407af', 'Ventilationsfel', 'Det låter konstigt från ventilationen och fläkten i köket drar inte ut matoset, måste kontrolleras snarast.', '2023-03-11 10:47:02', '2023-03-13 11:15:31', 3, '5f72fd36-b497-4481-b4dd-f6a98f12fb7a');
+('f98b98fb-0470-4096-90cd-0b05d8be9fc9', 'Blocked entrance', 'A lot of snow has fallen from the roof directly above the entrance, so right now it´s hard to get out there.', '2023-03-14 14:08:54', '2023-03-14 16:00:23', 3, '28ad7fbe-9365-4e69-8af3-7b07b879d090'),
+('6bad8146-7c0e-41d1-b646-377cd98d6c0e', 'Problems with the fiber network', 'The junction box to the fiber network in the apartment flashes red and does not really work. Tried restarting it, but it finds no connection.', '2023-03-10 15:28:14', '2023-03-13 10:08:54', 3, '5be79af7-42d0-43eb-a40f-c6c0896389da'),
+('c5d7c1c5-be5c-441f-b756-3635616407af', 'Clogged ventilation?', 'It sounds strange from the ventilation and the fan in the kitchen does not draw out the cooking smoke, should be checked quickly as it seems to be clogged.', '2023-03-11 10:47:02', '2023-03-13 11:15:31', 3, '5f72fd36-b497-4481-b4dd-f6a98f12fb7a');
 Go
 
 INSERT INTO Comments
 VALUES 
-('e8622fa6-a076-4171-80f4-e5b05bfb6470', 'Nu är det skottat utanför er entré och ärendet avslutat.', '2023-03-14 15:00:23', 'f98b98fb-0470-4096-90cd-0b05d8be9fc9', 2),
-('fa324713-a369-42c0-8a93-896a1f3fad2a',  'Problemet är åtgärdat och ärendet avslutat.', '2023-03-13 10:08:54', '6bad8146-7c0e-41d1-b646-377cd98d6c0e', 3),
-('192e0b5e-ed3a-4693-a535-f7496616af0b', 'Ventilationsproblemet åtgärdat och ärendet avslutat.', '2023-03-13 11:15:31', 'c5d7c1c5-be5c-441f-b756-3635616407af', 2);
+('e8622fa6-a076-4171-80f4-e5b05bfb6470', 'Now the snow has been shoveled outside your entrance and the case is completed.', '2023-03-14 15:00:23', 'f98b98fb-0470-4096-90cd-0b05d8be9fc9', 2),
+('fa324713-a369-42c0-8a93-896a1f3fad2a', 'The problem has been resolved, and the case is completed.', '2023-03-13 10:08:54', '6bad8146-7c0e-41d1-b646-377cd98d6c0e', 3),
+('192e0b5e-ed3a-4693-a535-f7496616af0b', 'The ventilation problem has been fixed, and the task is completed.', '2023-03-13 11:15:31', 'c5d7c1c5-be5c-441f-b756-3635616407af', 2);
 Go

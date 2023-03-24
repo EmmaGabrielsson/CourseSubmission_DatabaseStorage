@@ -108,9 +108,10 @@ namespace CourseSubmission_DatabaseStorage.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("Email");
-
                     b.HasIndex("AdressId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Clients");
                 });

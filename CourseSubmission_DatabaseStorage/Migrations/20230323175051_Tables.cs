@@ -66,7 +66,6 @@ namespace CourseSubmission_DatabaseStorage.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Clients", x => x.Id);
-                    table.UniqueConstraint("AK_Clients_Email", x => x.Email);
                     table.ForeignKey(
                         name: "FK_Clients_Adresses_AdressId",
                         column: x => x.AdressId,
@@ -166,6 +165,12 @@ namespace CourseSubmission_DatabaseStorage.Migrations
                 name: "IX_Clients_AdressId",
                 table: "Clients",
                 column: "AdressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clients_Email",
+                table: "Clients",
+                column: "Email",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_CaseId",

@@ -26,6 +26,14 @@ internal class EmployeeService : GenericService<EmployeeEntity>
         }
 
     }
+    public override async Task<IEnumerable<EmployeeEntity>> GetAllAsync()
+    {
+        return await _context.Employees
+                    .Include(x => x.Role)
+                    .OrderByDescending(x => x.RoleId)
+                    .ToListAsync();
+    }
+
     public override async Task<EmployeeEntity> GetAsync(Expression<Func<EmployeeEntity, bool>> predicate)
     {
         var item = await _context.Employees.Include(x => x.Role).FirstOrDefaultAsync(predicate);
