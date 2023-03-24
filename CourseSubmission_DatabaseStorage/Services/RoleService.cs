@@ -15,7 +15,7 @@ internal class RoleService : GenericService<RoleEntity>
 
             foreach (var role in _roles)
             {
-                await _context.AddAsync(new RoleEntity { RoleName = role });
+                await _context.Roles.AddAsync(new RoleEntity { RoleName = role });
                 await _context.SaveChangesAsync();
             }
         }

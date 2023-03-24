@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourseSubmission_DatabaseStorage.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230323175051_Tables")]
+    [Migration("20230324223424_Tables")]
     partial class Tables
     {
         /// <inheritdoc />

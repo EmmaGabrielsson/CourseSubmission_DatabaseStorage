@@ -66,7 +66,7 @@ internal class CaseService : GenericService<CaseEntity>
         {
             _entity.UpdatedDate = DateTime.Now;
             _entity.StatusTypeId = statusId;
-            _context.Update(_entity);
+            _context.Cases.Update(_entity);
             await _context.SaveChangesAsync();
             return _entity;
         }

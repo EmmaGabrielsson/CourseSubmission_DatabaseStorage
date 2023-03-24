@@ -21,6 +21,5 @@ internal class CommentService : GenericService<CommentEntity>
             await _context.AddAsync(new CommentEntity { Id = new Guid("192e0b5e-ed3a-4693-a535-f7496616af0b"), TextComment = "The ventilation problem has been fixed, and the case is completed.", Created = DateTime.Parse("2023-03-13 11:15:31"), CaseId = Guid.Parse("c5d7c1c5-be5c-441f-b756-3635616407af"), EmployeeId = 2 });
             await _context.SaveChangesAsync();
         }
-
     }
 }

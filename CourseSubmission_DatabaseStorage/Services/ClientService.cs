@@ -27,9 +27,6 @@ internal class ClientService : GenericService<ClientEntity>
 
             await _context.AddAsync(new ClientEntity { Id = new Guid("28ad7fbe-9365-4e69-8af3-7b07b879d090"), FirstName = "Sören", LastName = "Larsson", Email = "sören@example.com", PhoneNumber = "+4670-5896332", AdressId = 5 });
             await _context.SaveChangesAsync();
-
-            await _context.AddAsync(new ClientEntity { Id = new Guid("a45633ad-a9c7-4edc-9561-338bfcfe4c8d"), FirstName = "Hans", LastName = "Mattin-Lassei", Email = "hans@example.com", PhoneNumber = "+4670-2583699", AdressId = 6 });
-            await _context.SaveChangesAsync();
         }
     }
 
@@ -50,7 +47,7 @@ internal class ClientService : GenericService<ClientEntity>
 
     public override async Task<ClientEntity> UpdateAsync(ClientEntity entity)
     {
-        _context.Update(entity);     
+        _context.Clients.Update(entity);     
         await _context.SaveChangesAsync();
         return entity;
     }

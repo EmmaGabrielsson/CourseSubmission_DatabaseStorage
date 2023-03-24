@@ -25,9 +25,6 @@ internal class AdressService : GenericService<AdressEntity>
 
             await _context.AddAsync(new AdressEntity { StreetName = "Villagatan 56", PostalCode = "65425", City = "Göteborg" });
             await _context.SaveChangesAsync();
-
-            await _context.AddAsync(new AdressEntity { StreetName = "Nordkapsvägen 14", PostalCode = "25469", City = "Göteborg" });
-            await _context.SaveChangesAsync();
         }
     }
 }
