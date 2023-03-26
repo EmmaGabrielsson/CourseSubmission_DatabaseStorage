@@ -51,4 +51,16 @@ internal class ClientService : GenericService<ClientEntity>
         await _context.SaveChangesAsync();
         return entity;
     }
+
+    public override async Task<bool> DeleteAsync(ClientEntity entity)
+    {
+        var _findEntity = await _context.Clients.FindAsync(entity.Id);
+        if(_findEntity != null)
+        {
+            _context.Clients.Remove(_findEntity!);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        return false;
+    }
 }

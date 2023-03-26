@@ -48,10 +48,9 @@ internal abstract class GenericService<TEntity> where TEntity : class
         await _context.SaveChangesAsync();
         return entity;
     }
-
     public virtual async Task DeleteAsync(TEntity entity)
     {
-            _context.Remove(entity);
-            await _context.SaveChangesAsync();
+        _context.Remove(entity);
+        await _context.SaveChangesAsync();
     }
 }

@@ -97,34 +97,36 @@ internal class MenuService
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("\n*Firstname: ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _client.FirstName = Console.ReadLine()!;
+        _client.FirstName = Console.ReadLine()!.Trim();
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("*Lastname: ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _client.LastName = Console.ReadLine()!;
+        _client.LastName = Console.ReadLine()!.Trim();
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("*Email: ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _client.Email = Console.ReadLine()!;
+        _client.Email = Console.ReadLine()!.Trim();
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("Phonenumber (ex. +4670-1234567): ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _client.PhoneNumber = Console.ReadLine()!;
+        _client.PhoneNumber = Console.ReadLine()!.Trim();
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("*Streetname: ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _adress.StreetName = Console.ReadLine()!;
+        _adress.StreetName = Console.ReadLine()!.Trim();
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("*Postalcode (ex. 12345): ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _adress.PostalCode = Console.ReadLine()!;
+        _adress.PostalCode = Console.ReadLine()!.Trim();
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("*City: ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        _adress.City = Console.ReadLine()!;
+        _adress.City = Console.ReadLine()!.Trim();
+
+        var _checkIfEmailExist = await _clientService.GetAsync(x => x.Email == _client.Email);
 
         if (!string.IsNullOrEmpty(_adress.StreetName) && !string.IsNullOrEmpty(_adress.PostalCode) && !string.IsNullOrEmpty(_adress.City)
-            && !string.IsNullOrEmpty(_client.FirstName) && !string.IsNullOrEmpty(_client.LastName) && !string.IsNullOrEmpty(_client.Email))
+            && !string.IsNullOrEmpty(_client.FirstName) && !string.IsNullOrEmpty(_client.LastName) && !string.IsNullOrEmpty(_client.Email) && _checkIfEmailExist == null)
         {
             var _setAdress = await _adressService.GetOrCreateAsync(_adress, x => x.StreetName == _adress.StreetName && x.PostalCode == _adress.PostalCode && x.City == _adress.City);
             _client.AdressId = _setAdress.Id;
@@ -140,6 +142,7 @@ internal class MenuService
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("\nA new client could not be created. \nFill in all information needed* and try again.");
+            Console.WriteLine("\nMake sure that you´re not already registrated here \nbecause you can´t create more accounts using the same emailadress.");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\n-------------------------------------------------------\n");
             Console.WriteLine("Press a key to return to main menu..");
@@ -164,7 +167,7 @@ internal class MenuService
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("\n↑ Here is your profile information,\n  do you need to update it (yes/no)? ");
             Console.ForegroundColor = ConsoleColor.Gray;
-            string? _answer = Console.ReadLine()?.ToLower();
+            string? _answer = Console.ReadLine()?.ToLower().Trim();
 
             bool _run = true;
             while (_run)
@@ -178,11 +181,11 @@ internal class MenuService
                         Console.WriteLine("\nOk, then continue with..");
                         Console.Write("\n*Casetitle: ");
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        string? _title = Console.ReadLine();
+                        string _title = Console.ReadLine()!.Trim();
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.Write("\n*Describe the case: ");
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        string? _description = Console.ReadLine();
+                        string _description = Console.ReadLine()!;
 
                         var _status = await _statusService.GetAsync(x => x.StatusName.ToLower() == "not started");
 
@@ -207,7 +210,7 @@ internal class MenuService
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("\nA case could not be created. Fill in all information needed and try again.");
+                            Console.WriteLine("\nA case could not be created. Fill in all information needed* and try again.");
                             Console.WriteLine("Press a key to return to main menu..");
                         }
                         _run = false;
@@ -220,13 +223,13 @@ internal class MenuService
                         Console.WriteLine("\nFill in the following..");
                         Console.Write("\nFirstname: ");
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        string? _firstName = Console.ReadLine();
+                        string _firstName = Console.ReadLine()!.Trim();
                         if (!string.IsNullOrEmpty(_firstName))
                             _client.FirstName = _firstName;
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.Write("Lastname: ");
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        string? _lastName = Console.ReadLine();
+                        string _lastName = Console.ReadLine()!.Trim();
                         if (!string.IsNullOrEmpty(_lastName))
                             _client.LastName = _lastName;
                         Console.ForegroundColor = ConsoleColor.Yellow;
@@ -238,7 +241,7 @@ internal class MenuService
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.Write("Streetname: ");
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        string? _streetName = Console.ReadLine();
+                        string _streetName = Console.ReadLine()!.Trim();
                         if (!string.IsNullOrEmpty(_streetName))
                             _adress.StreetName = _streetName;
                         else 
@@ -246,7 +249,7 @@ internal class MenuService
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.Write("Postalcode (ex. 12345): ");
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        var _postalCode = Console.ReadLine();
+                        var _postalCode = Console.ReadLine()!.Trim();
                         if (!string.IsNullOrEmpty(_postalCode))
                             _adress.PostalCode = _postalCode;
                         else 
@@ -254,7 +257,7 @@ internal class MenuService
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.Write("City: ");
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        string? _city = Console.ReadLine();
+                        string _city = Console.ReadLine()!.Trim();
                         if (!string.IsNullOrEmpty(_city))
                             _adress.City = _city;
                         else
@@ -286,7 +289,7 @@ internal class MenuService
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write("\nI did not understand your answer, try again please (yes/no): ");
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        _answer = Console.ReadLine()?.ToLower();
+                        _answer = Console.ReadLine()?.ToLower().Trim();
                         break;
                 }
             }
@@ -301,17 +304,20 @@ internal class MenuService
             Console.WriteLine("Press (m) to return to main menu.");
             Console.Write("\n");
             Console.ForegroundColor = ConsoleColor.Gray;
-            string _key = Console.ReadLine()!.ToLower();
+            string _key = Console.ReadLine()!.ToLower().Trim();
 
-            while (true)
+            bool _run = true;
+            while (_run)
             {
                 switch (_key)
                 {
                     case "c":
+                        _run = false;
                         await CreateCaseMenu();
                         break;
 
                     case "m":
+                        _run = false;
                         await MainMenu();
                         break;
 
@@ -319,7 +325,7 @@ internal class MenuService
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write("I did not understand your option, try again.. ");
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        _key = Console.ReadLine()!.ToLower();
+                        _key = Console.ReadLine()!.ToLower().Trim();
                         break;
                 }
             }
@@ -340,12 +346,53 @@ internal class MenuService
         if (_client != null)
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine($"\nHi {_client.FirstName}, sorry to note that you don't want to be registered \nhere anymore, looking forward to hear from you again!");
-            await _clientService.DeleteAsync(_client);
-            Console.WriteLine("(You have now been removed from our database.)");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("\n----------------------------------------------------------\n");
-            Console.WriteLine("Press a key to return to main menu..");
+            Console.Write($"\nHi {_client.FirstName}! Sorry to note that you don't want to be registered \nhere anymore, are you sure you want to remove your account (yes/no)? ");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            string _answer = Console.ReadLine()!.ToLower();
+            bool _run = true;
+
+            while (_run)
+            {
+                switch (_answer)
+                {
+                    case "yes":
+                        _run = false;
+                        if(await _clientService.DeleteAsync(_client) == true)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\nYou have now been removed from our database, \nlooking forward to hear from you again!");
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("\n----------------------------------------------------------\n");
+                            Console.WriteLine("Press a key to return to main menu..");
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\nSomething went wrong, try again.");
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("\n----------------------------------------------------------\n");
+                            Console.WriteLine("Press a key to return to main menu..");
+                        }
+                        break;
+
+                    case "no":
+                        _run = false;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write("\nHappy to hear that you staying registrated!");
+                        Console.WriteLine("\n----------------------------------------------------------\n");
+                        Console.WriteLine("Press a key to return to main menu..");
+                        Console.ReadKey();
+                        await MainMenu();
+                        break;
+
+                    default:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("\nI did not understand your option, try again.. ");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        _answer = Console.ReadLine()!.ToLower();
+                        break;
+                }
+            }
         }
         else
         {
@@ -353,21 +400,24 @@ internal class MenuService
             Console.WriteLine("\nSorry, I could not find you in our database.");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\n----------------------------------------------------------\n");
-            Console.WriteLine("Press (c) to try a correct emailadress that you have registrated here ☻.");
+            Console.WriteLine("Press (r) to try a correct emailadress that you have registrated here ☻.");
             Console.WriteLine("Press (m) to return to main menu.");
             Console.Write("\n");
             Console.ForegroundColor = ConsoleColor.Gray;
             string _key = Console.ReadLine()!.ToLower();
+            bool _run = true;
 
-            while (true)
+            while (_run)
             {
                 switch (_key)
                 {
-                    case "c":
-                        await CreateCaseMenu();
+                    case "r":
+                        _run = false;
+                        await DeleteClientMenu();
                         break;
 
                     case "m":
+                        _run = false;
                         await MainMenu();
                         break;
 
@@ -379,7 +429,6 @@ internal class MenuService
                         break;
                 }
             }
-
         }
     }
     private async Task ViewAllCasesMenu()
@@ -409,7 +458,7 @@ internal class MenuService
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("Could not find any cases because there is no \nregistrated cases in the database.");
-            Console.WriteLine("\n---------------------------------------------\n");
+            Console.WriteLine("\n---------------------------------------------");
             Console.WriteLine("\nPress a key to return to main menu..");
         }
     }
@@ -433,14 +482,14 @@ internal class MenuService
                 Console.WriteLine($"Clients email: {_result.Client.Email}\n");
             }
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("------------------------------------------------------------------------\n");
+            Console.WriteLine("------------------------------------------------------------------------");
             Console.WriteLine("\nPress a key to return to main menu..");
         }
         else
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("Could not find any cases because there is no \nactive cases in the database.");
-            Console.WriteLine("\n------------------------------------------------------------------------\n");
+            Console.WriteLine("\n------------------------------------------------------------------------");
             Console.WriteLine("\nPress a key to return to main menu..");
         }
 
@@ -452,7 +501,7 @@ internal class MenuService
         Console.WriteLine("\n---------------- Search Specific Case ---------------\n");
         Console.Write("Enter Case Id: ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        string? _searchId = Console.ReadLine();
+        string _searchId = Console.ReadLine()!.Trim();
         CaseEntity _foundCase = new();
         _foundCase = await _caseService.GetAsync(x => x.Id.ToString() == _searchId);
 
@@ -499,17 +548,20 @@ internal class MenuService
             Console.WriteLine("Press (m) to return to main menu.");
             Console.Write("\n");
             Console.ForegroundColor = ConsoleColor.Gray;
-            string _key = Console.ReadLine()!.ToLower();
+            string _key = Console.ReadLine()!.ToLower().Trim();
 
-            while (true)
+            bool _run = true;
+            while (_run)
             {
                 switch (_key)
                 {
                     case "s":
+                        _run = false;
                         await SearchSpecificCaseMenu();
                         break;
 
                     case "m":
+                        _run = false;
                         await MainMenu();
                         break;
 
@@ -517,7 +569,7 @@ internal class MenuService
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write("I did not understand your option, try again.. ");
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        _key = Console.ReadLine()!.ToLower();
+                        _key = Console.ReadLine()!.ToLower().Trim();
                         break;
                 }
             }
@@ -530,7 +582,7 @@ internal class MenuService
         Console.WriteLine("\n------------------ Update Status & Create Comment on a Case -----------------\n");
         Console.Write("Enter Case Id: ");
         Console.ForegroundColor = ConsoleColor.Gray;
-        string? _searchId = Console.ReadLine();
+        string _searchId = Console.ReadLine()!.Trim();
 
         var _foundCase = await _caseService.GetAsync(x => (x.Id).ToString() == _searchId);
 
@@ -571,7 +623,7 @@ internal class MenuService
             Console.WriteLine("\n");
             Console.Write("Hi employee, can you enter your lastname (select from above): ");
             Console.ForegroundColor = ConsoleColor.Gray;
-            string _employeeLastName = Console.ReadLine()!.ToLower();
+            string _employeeLastName = Console.ReadLine()!.ToLower().Trim();
 
             bool _runIf = true;
             while (_runIf == true)
@@ -584,7 +636,7 @@ internal class MenuService
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.Write("Enter your comment: ");
                     Console.ForegroundColor = ConsoleColor.Gray;
-                    string? _textComment = Console.ReadLine()!;
+                    string _textComment = Console.ReadLine()!.Trim();
 
                     if (!string.IsNullOrEmpty(_textComment))
                     {
@@ -598,7 +650,7 @@ internal class MenuService
                         Console.WriteLine($"\nThank you, the comment is now created.");
                         Console.Write("What status do you want to update the case to (ongoing/completed): ");
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        string _statusOption = Console.ReadLine()!.ToLower();
+                        string _statusOption = Console.ReadLine()!.ToLower().Trim();
 
 
                         bool _runIfStatus = true;
@@ -619,7 +671,7 @@ internal class MenuService
                                 Console.ForegroundColor = ConsoleColor.Red;
                                 Console.Write("\nInvalid input, try again.. ");
                                 Console.ForegroundColor = ConsoleColor.Gray;
-                                _statusOption = Console.ReadLine()!.ToLower();
+                                _statusOption = Console.ReadLine()!.ToLower().Trim();
                             }
                         }
                     }
@@ -630,7 +682,7 @@ internal class MenuService
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.Write("\nI could not find you, did you spell your lastname right? \nEnter your lastname again: ");
                     Console.ForegroundColor = ConsoleColor.Gray;
-                    _employeeLastName = Console.ReadLine()!.ToLower();
+                    _employeeLastName = Console.ReadLine()!.ToLower().Trim();
                 }
             }
         }
