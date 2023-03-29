@@ -1,6 +1,7 @@
 ﻿using CourseSubmission_DatabaseStorage.Contexts;
 using CourseSubmission_DatabaseStorage.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace CourseSubmission_DatabaseStorage.Services;
@@ -54,10 +55,22 @@ internal class ClientService : GenericService<ClientEntity>
 
     public override async Task<bool> DeleteAsync(ClientEntity entity)
     {
-        var _findEntity = await _context.Clients.FindAsync(entity.Id);
-        if(_findEntity != null)
+        var _findClientEntity = await _context.Clients.FindAsync(entity.Id);
+        if (_findClientEntity == null)
         {
-            _context.Clients.Remove(_findEntity!);
+            // handle client not found error
+            return false;
+        }
+
+        IEnumerable<CaseEntity> _activeCasesOnClient = await _context.Cases
+            .Where(x => x.ClientId == _findClientEntity!.Id && 
+            (x.StatusType.StatusName.ToLower() == "not started"
+            || x.StatusType.StatusName.ToLower() == "ongoing"))
+            .ToListAsync();
+
+        if (!_activeCasesOnClient.Any())
+        {
+            _context.Clients.Remove(_findClientEntity!);
             await _context.SaveChangesAsync();
             return true;
         }

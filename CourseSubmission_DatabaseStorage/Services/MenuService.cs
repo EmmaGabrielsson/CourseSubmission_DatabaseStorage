@@ -368,7 +368,9 @@ internal class MenuService
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("\nSomething went wrong, try again.");
+                            Console.WriteLine("\nYou probably still have active cases here, so until then you can´t " +
+                                              "\nremove your account because we need your information to " +
+                                              "\nbe able to help you. Try again later..");
                             Console.ForegroundColor = ConsoleColor.Yellow;
                             Console.WriteLine("\n----------------------------------------------------------\n");
                             Console.WriteLine("Press a key to return to main menu..");
